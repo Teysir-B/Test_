@@ -93,27 +93,33 @@
         <li><a href="#comparison">II. Comparison of the Different Approaches for Timestep Selection</a></li>
         <li><a href="#comparison2">III. Comparison with MusicMagus</a></li>
         <li><a href="#more_samples">IV. More Samples</a></li>
+        <li><a href="#limitations">V. Limitations</a></li>
         <li><a href="#references">References</a></li>
       </ul>
 
       <h2 id="illustration_generation_process">I. Illustration of the Generation Process</h2>
-      <p>This sample corresponds to the example treated in Section 4.1 of the paper. It showcases the effect of changing the instrument name in the prompt at different timesteps of a 50-step inference process.</p>
+      <p>This sample corresponds to the example treated in Section 4.1 of the paper. It showcases the effect of changing the instrument name in the prompt at different timesteps of a 50-step inference process. As discussed in the paper, if we swap the instrument name in the prompt during the early stages of the sampling process, the content is not fully preserved. On the other hand, if we do so during the later stages of inference, the timbre information has already been integrated into the latent, making it too late to modify at this point. By selecting an appropriate timestep, the desired outcome is achieved: playing the original content with the target instrument.</p>
       <table class="audio-table">
-        <thead>
-          <tr>
-            <th>Original Audio</th>
-            <th>t=39<br>(loss of content)</th>
-            <th>t=21<br>(best timestep)</th>
-            <th>t=9<br>(loss of timbre)</th>
-          </tr>
-        </thead>
         <tbody>
           <tr>
-            <td><audio controls style="width: 150px; height: 50px"><source src="samples/Illustration/A soft and elegant piano legato note._before.wav" type="audio/wav"></audio></td>
-            <td><audio controls style="width: 150px; height: 50px"><source src="samples/Illustration/A soft and elegant violin legato note._after_10.wav" type="audio/wav"></audio></td>
-            <td><audio controls style="width: 150px; height: 50px"><source src="samples/Illustration/A soft and elegant violin legato note._after_28.wav" type="audio/wav"></audio></td>
-            <td><audio controls style="width: 150px; height: 50px"><source src="samples/Illustration/A soft and elegant violin legato note._after_40.wav" type="audio/wav"></audio></td>
+            <td align="center">Original Audio<br/>
+              <img src="samples/Illustration/mel_spectrogram_A soft and elegant piano legato note._before.png" width="300" alt=""/> <br/>
+              <audio controls=""><source src="samples/Illustration/A soft and elegant piano legato note._before.wav"></audio>
+            </td>
+            <td align="center">t=39<br>(Content changes)<br/>
+              <img src="samples/Illustration/mel_spectrogram_A soft and elegant violin legato note._after_10.png" width="300" alt=""/> <br/>
+              <audio controls=""><source src="samples/Illustration/A soft and elegant violin legato note._after_10.wav"></audio>
+            </td>
+            <td align="center">t=21<br>(Optimal timestep)<br/>
+              <img src="samples/Illustration/mel_spectrogram_A soft and elegant violin legato note._after_28.png" width="300" alt=""/> <br/>
+              <audio controls=""><source src="samples/Illustration/A soft and elegant violin legato note._after_28.wav"></audio>
+            </td>
+            <td align="center">t=9<br>(Timbre cannot be altered)<br/>
+              <img src="samples/Illustration/mel_spectrogram_A soft and elegant violin legato note._after_40.png" width="300" alt=""/> <br/>
+              <audio controls=""><source src="samples/Illustration/A soft and elegant violin legato note._after_40.wav"></audio>
+            </td>
           </tr>
+
         </tbody>
       </table>
 
@@ -158,6 +164,7 @@
       </table>
 
       <h2 id="comparison2">III. Comparison with MusicMagus</h2>
+      <p>In this section, we compare our method, Diff-TONE, with MusicMagus [1]. It is important to note that the original audio inputs differ between the two approaches: MusicMagus is built upon AudioLDM 2 [2], while our method is based on Stable Audio Open [3]. Additionally, for MusicMagus, we retained the original hyperparameter settings, including 100 diffusion steps, whereas our approach uses only 50 diffusion steps.</p>
       <table class="audio-table">
         <thead>
           <tr>
@@ -203,7 +210,7 @@
           <tr>
             <th style="width: 400px;">Prompt</th>
             <th style="width: 200px;">Editing</th>
-            <th>Original Audio for Diff-TONE</th>
+            <th>Original Audio</th>
             <th>Diff-TONE</th>
           </tr>
         </thead>
@@ -286,12 +293,89 @@
             <td><audio controls style="width: 150px; height: 50px"><source src="samples/orig/sax2pia/A smooth and sultry saxophone melody._before_7_6.wav" type="audio/wav"></audio></td>
             <td><audio controls style="width: 150px; height: 50px"><source src="samples/Diff-Tone/sax2pia/A smooth and sultry piano melody._after_29_7_6.wav" type="audio/wav"></audio></td>
           </tr>
+          <tr>
+            <td><h7>A noble and commanding trumpet blast</h7></td>
+            <td><h7>Trumpet &rarr; Acoustic Guitar</h7></td>
+            <td><audio controls style="width: 150px; height: 50px"><source src="samples/orig/tru2gac/A noble and commanding trumpet blast._before_31_8_3.wav" type="audio/wav"></audio></td>
+            <td><audio controls style="width: 150px; height: 50px"><source src="samples/Diff-Tone/tru2gac/A noble and commanding acoustic guitar blast._after_31_8_3.wav" type="audio/wav"></audio></td>
+          </tr>
+          <tr>
+            <td><h7>A quick and nimble flute trill</h7></td>
+            <td><h7>Flute &rarr; Cello</h7></td>
+            <td><audio controls style="width: 150px; height: 50px"><source src="samples/orig/flu2cel/A quick and nimble flute trill._before_28_2_0.wav" type="audio/wav"></audio></td>
+            <td><audio controls style="width: 150px; height: 50px"><source src="samples/Diff-Tone/flu2cel/A quick and nimble cello trill._after_28_2_0.wav" type="audio/wav"></audio></td>
+          </tr>
+          <tr>
+            <td><h7>A bright and airy flute passage</h7></td>
+            <td><h7>Flute &rarr; Violin</h7></td>
+            <td><audio controls style="width: 150px; height: 50px"><source src="samples/orig/flu2vio/A bright and airy flute passage._before_27_2_9.wav" type="audio/wav"></audio></td>
+            <td><audio controls style="width: 150px; height: 50px"><source src="samples/Diff-Tone/flu2vio/A bright and airy violin passage._after_27_2_9.wav" type="audio/wav"></audio></td>
+          </tr>
+          <tr>
+            <td><h7>A quick and nimble flute trill</h7></td>
+            <td><h7>Flute &rarr; Violin</h7></td>
+            <td><audio controls style="width: 150px; height: 50px"><source src="samples/orig/flu2vio/A quick and nimble flute trill._before_28_2_9.wav" type="audio/wav"></audio></td>
+            <td><audio controls style="width: 150px; height: 50px"><source src="samples/Diff-Tone/flu2vio/A quick and nimble violin trill._after_28_2_9.wav" type="audio/wav"></audio></td>
+          </tr>
+          <tr>
+            <td><h7>A mystical and airy flute trill</h7></td>
+            <td><h7>Flute &rarr; Violin</h7></td>
+            <td><audio controls style="width: 150px; height: 50px"><source src="samples/orig/flu2vio/A mystical and airy flute trill._before_25_2_9.wav" type="audio/wav"></audio></td>
+            <td><audio controls style="width: 150px; height: 50px"><source src="samples/Diff-Tone/flu2vio/A mystical and airy violin trill._after_25_2_9.wav" type="audio/wav"></audio></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2 id="limitations">V. Limitations</h2>
+      Sometimes, our approach fails when a non-optimal timestep is selected. This can result in either generating different content than intended, or, producing audio that is identical to the original input.
+      <table class="audio-table">
+        <thead>
+          <tr>
+            <th style="width: 400px;">Prompt</th>
+            <th style="width: 200px;">Editing</th>
+            <th>Original Audio</th>
+            <th>Diff-TONE</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><h7>A melancholic violin legato phrase</h7></td>
+            <td><h7>Violin &rarr; Saxophone</h7></td>
+            <td><audio controls style="width: 150px; height: 50px"><source src="samples/Limitations/vio2sax/A melancholic violin legato phrase._before_25_9_7.wav" type="audio/wav"></audio></td>
+            <td><audio controls style="width: 150px; height: 50px"><source src="samples/Limitations/vio2sax/A melancholic saxophone legato phrase._after_25_9_7.wav" type="audio/wav"></audio></td>
+          </tr>
+          <tr>
+            <td><h7>A blues-rock electric guitar bend</h7></td>
+            <td><h7>Electric Guitar &rarr; Organ</h7></td>
+            <td><audio controls style="width: 150px; height: 50px"><source src="samples/Limitations/gel2org/A blues-rock electric guitar bend._before_0_4_5.wav" type="audio/wav"></audio></td>
+            <td><audio controls style="width: 150px; height: 50px"><source src="samples/Limitations/gel2org/A blues-rock organ bend._after_0_4_5.wav" type="audio/wav"></audio></td>
+          </tr>
+          <tr>
+            <td><h7>A rich and harmonic cello phrase</h7></td>
+            <td><h7>Cello &rarr; Trumpet</h7></td>
+            <td><audio controls style="width: 150px; height: 50px"><source src="samples/Limitations/cel2tru/A rich and harmonic cello phrase._before_41_0_8.wav" type="audio/wav"></audio></td>
+            <td><audio controls style="width: 150px; height: 50px"><source src="samples/Limitations/cel2tru/A rich and harmonic trumpet phrase._after_41_0_8.wav" type="audio/wav"></audio></td>
+          </tr>
+          <tr>
+            <td><h7>A percussive and rhythmic acoustic guitar riff</h7></td>
+            <td><h7>Piano &rarr; Acoustic Guitar</h7></td>
+            <td><audio controls style="width: 150px; height: 50px"><source src="samples/Limitations/pia2gac/A percussive and rhythmic acoustic guitar riff._before_14_3_6.wav" type="audio/wav"></audio></td>
+            <td><audio controls style="width: 150px; height: 50px"><source src="samples/Limitations/pia2gac/A percussive and rhythmic piano riff._after_14_3_6.wav" type="audio/wav"></audio></td>
+          </tr>
+          <tr>
+            <td><h7>A fluid and agile clarinet solo</h7></td>
+            <td><h7>Clarinet &rarr; Flute</h7></td>
+            <td><audio controls style="width: 150px; height: 50px"><source src="samples/Limitations/cla2flu/A fluid and agile clarinet solo._before_25_1_2.wav" type="audio/wav"></audio></td>
+            <td><audio controls style="width: 150px; height: 50px"><source src="samples/Limitations/cla2flu/A fluid and agile flute solo._after_25_1_2.wav" type="audio/wav"></audio></td>
+          </tr>
         </tbody>
       </table>
 
       <h3 id="references">References</h3>
         <p>
-		  [1] Yixiao Zhang, Yukara Ikemiya, Gus Xia, Naoki Murata, Marco A. Martínez-Ramírez, Wei-Hsiang Liao, Yuki Mitsufuji, and Simon Dixon, “MusicMagus: Zero-Shot Text-to-Music Editing via Diffusion Models,” in Proc. IJCAI, 2024.<br/>
+		  [1] Yixiao Zhang, Yukara Ikemiya, Gus Xia, Naoki Murata, Marco A. Martínez-Ramírez, Wei-Hsiang Liao, Yuki Mitsufuji, and Simon Dixon. MusicMagus: Zero-Shot Text-to-Music Editing via Diffusion Models. In <i>Proc. IJCAI</i>, 2024.<br/>
+		  [2] Haohe Liu, Qiao Tian, Yi Yuan, Xubo Liu, Xinhao Mei, Qiuqiang Kong, Yuping Wang, Wenwu Wang, Yuxuan Wang, and Mark D Plumbley. AudioLDM 2: Learning holistic audio generation with self-supervised pretraining. <i>arXiv preprint arXiv:2308.05734</i>, 2023. <br/>
+		  [3] Zach Evans, Julian D. Parker, CJ Carr, Zack Zukowski, Josiah Taylor, and Jordi Pons. Stable Audio Open. <i>arXiv preprint arXiv:2407.14358</i>, 2024.<br/>
         </p>
       </div>
     </body>
